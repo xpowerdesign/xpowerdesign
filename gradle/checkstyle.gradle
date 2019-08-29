@@ -1,0 +1,28 @@
+apply plugin: 'checkstyle'
+
+ext {
+    checkstyleConfigDir = file("${projectDir}/config/checkstyle")
+    checkstyleMainFile = file("${checkstyleConfigDir}/checkstyle-main.xml")
+    checkstyleTestFile = file("${checkstyleConfigDir}/checkstyle-test.xml")
+}
+
+checkstyle {
+    sourceSets = [sourceSets.main]
+    configProperties.projectDir = projectDir
+    configProperties.checkstyleConfigDir = checkstyleConfigDir
+    checkstyleMain.configFile = checkstyleMainFile
+    checkstyleTest.configFile = checkstyleTestFile
+    maxWarnings = 0
+    ignoreFailures = false
+}
+
+tasks.withType(Checkstyle) {
+    checkstyleMain.source = "src/main/java"
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+    // exclude 'com/ecommerce/common/event/DomainEventReceiveRecordingAspect.java'
+}
+
+

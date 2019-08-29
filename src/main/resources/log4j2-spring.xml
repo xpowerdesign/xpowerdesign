@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[${env:APP_NAME}-${env:SPRING_PROFILES_ACTIVE}] %d{yyyy-MM-dd HH:mm:ss.SSS} [REQUEST_ID: %X{requestId}] [%level] [%t] %logger{50} - %msg%n" />
+        </Console>
+        <Async name="AsyncConsole">
+            <AppenderRef ref="Console"/>
+        </Async>
+    </Appenders>
+
+
+    <Loggers>
+        <!-- LOG everything at INFO level -->
+        <Root level="INFO">
+            <AppenderRef ref="AsyncConsole" />
+        </Root>
+    </Loggers>
+</configuration>
+

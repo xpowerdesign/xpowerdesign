@@ -1,0 +1,36 @@
+jacoco {
+    toolVersion "0.8.4"
+}
+
+jacocoTestCoverageVerification {
+    executionData test
+
+    violationRules {
+        rule {
+            element = 'CLASS'
+            excludes = [
+                    '**.domain.Q*',
+                    '**.*Configuration',
+                    '**.*Application',
+                    '**.*Command',
+            ]
+            limit {
+                minimum = 0.0
+            }
+        }
+    }
+}
+
+jacocoTestReport {
+    shouldRunAfter test
+    executionData test
+    reports {
+        csv.enabled false
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+
+jacocoTestCoverageVerification.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

@@ -1,0 +1,93 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://maven.aliyun.com/repository/central" }
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:5.2.1'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    // flyway database migration
+    id 'org.flywaydb.flyway' version '5.2.4'
+
+    // customize
+    id "checkstyle"
+    id "jacoco"
+    id "org.sonarqube" version "2.7"
+    id "com.github.spotbugs" version "2.0.0"
+    id "com.avast.gradle.docker-compose" version "0.9.4"
+}
+
+group = 'com.xpower.xpowerdesign'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    componentTestImplementation.extendsFrom testImplementation
+    componentTestRuntimeOnly.extendsFrom testRuntimeOnly
+    apiTestImplementation.extendsFrom testImplementation
+    apiTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+repositories {
+    maven {
+        url "https://maven.aliyun.com/repository/central"
+    }
+    mavenCentral()
+}
+
+
+// apply plugin 声明引用插件的类型
+// apply from 表示引用其他的配置文件
+apply from: "${rootProject.projectDir}/gradle/idea.gradle"
+apply from: "${rootProject.projectDir}/gradle/flyway.gradle"
+apply from: "${rootProject.projectDir}/gradle/dependency-check.gradle"
+apply from: "${rootProject.projectDir}/gradle/git-hooks.gradle"
+apply from: "${rootProject.projectDir}/gradle/checkstyle.gradle"
+apply from: "${rootProject.projectDir}/gradle/spotbugs.gradle"
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
+apply from: "${rootProject.projectDir}/gradle/version.gradle"
+apply from: "${rootProject.projectDir}/gradle/sonar.gradle"
+apply from: "${rootProject.projectDir}/gradle/docker-compose.gradle"
+
+
+dependencies {
+    // spring dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    // common tools
+    //// lombok code generator
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    //// swagger
+    implementation('io.springfox:springfox-swagger2:2.9.2')
+    implementation('io.springfox:springfox-swagger-ui:2.9.2')
+    //// json parse
+    compile 'com.alibaba:fastjson:1.2.59'
+
+    // test tools
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "io.rest-assured:spring-mock-mvc"
+    testCompile "org.junit.jupiter:junit-jupiter-api"
+    testCompile 'org.junit.jupiter:junit-jupiter-engine'
+    testCompile 'org.mockito:mockito-junit-jupiter:2.26.0'
+}

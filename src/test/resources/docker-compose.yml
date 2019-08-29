@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mysql:
+    restart: always
+    image: mysql:5.7.25
+    container_name: xpowerdesign-test-mysql
+    tmpfs: /var/lib/mysql:rw
+    command: [
+      'mysqld',
+      '--innodb-buffer-pool-size=20M',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00'
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: xpowerdesign
+      MYSQL_USER: root
+    ports:
+      - "10002:3306"
+    networks:
+      - xpowerdesign-test-net
+networks:
+  xpowerdesign-test-net:
+    driver: bridge

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>XPowerDesign Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css">
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    #swagger {
+      margin: 0;
+      padding: 0;
+    }
+
+    .markdown-body {
+      padding: 20px;
+    }
+
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" v-cloak>
+    <el-menu mode="horizontal" @select="handleSelect" :default-active="defaultMenuIndex">
+      <el-menu-item
+          v-for="(item, index) in menu"
+          :key="index"
+          :index="index">
+        {{ item.title }}
+      </el-menu-item>
+    </el-menu>
+    <div id="content"></div>
+    <template>
+      <el-backtop></el-backtop>
+    </template>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/9.1.0/markdown-it.min.js"></script>
+  <script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+  <script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    new Vue({
+      el: ".container",
+      mounted() {
+        this.content = document.querySelector("#content");
+        this.init();
+      },
+      data() {
+        return {
+          mdConverter: markdownit({ html: true }),
+          currentMenuIndex: null,
+          defaultMenuIndex: "1",
+          menu: {
+            "1": {
+              title: "开发文档",
+              handleSelect: () => this.showMarkdown("doc.md")
+            },
+            "2": {
+              title: "API 设计",
+              handleSelect: () => this.showSwagger("swagger.yaml")
+            },
+            "3": {
+              title: "开发流程",
+              handleSelect: () => this.showMarkdown("cards.md")
+            }
+          }
+        }
+      },
+      methods: {
+        init() {
+          this.handleSelect(this.defaultMenuIndex);
+        },
+        async getText(url) {
+          const res = await fetch(url);
+          return await res.text();
+        },
+        handleSelect(index) {
+          if (this.currentMenuIndex === index) {
+            return;
+          }
+          this.currentMenuIndex = index;
+          const item = this.menu[index];
+          if (item) {
+            this.clearContent();
+            item.handleSelect();
+          }
+        },
+        clearContent() {
+          this.content.innerHTML = "";
+        },
+        async showMarkdown(url) {
+          const md = await this.getText(url);
+          const html = this.mdConverter.render(md);
+          const mdWrapper = document.createElement("div");
+          mdWrapper.classList.add("markdown-body");
+          mdWrapper.insertAdjacentHTML("afterbegin", html);
+          this.content.appendChild(mdWrapper);
+        },
+        async showSwagger(url) {
+          const swaggerDiv = document.createElement("div");
+          swaggerDiv.id = "swagger";
+          this.content.appendChild(swaggerDiv);
+          const ui = SwaggerUIBundle({
+            url,
+            dom_id: "#swagger",
+            presets: [
+              SwaggerUIBundle.presets.apis,
+              SwaggerUIStandalonePreset
+            ]
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

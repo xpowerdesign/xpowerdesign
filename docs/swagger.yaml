@@ -1,0 +1,430 @@
+swagger: "2.0"
+
+info:
+  description: ""
+  version: "1.0.0"
+  title: "XPowerDesign API"
+  
+host: "localhost:8080"
+basePath: "/api/v1"
+
+schemes:
+  - "http"
+
+tags: 
+  - name: admin
+    description: 管理员用接口
+  - name: user
+    description: 用户管理
+  - name: projects
+    description: 工程信息
+  - name: assets
+    description: 素材资源
+  - name: template
+    description: 模版管理
+  - name: token
+    description: 图床token信息
+
+paths:
+  /register:
+    post:
+      tags: [user]
+      summary: 用户注册
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: formData
+          name: username
+          type: string
+        - in: formData
+          name: password
+          type: string
+      responses:
+        200:
+          description: OK
+    
+  /login:
+    post:
+      tags: [user]
+      summary: 用户登录
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: formData
+          name: username
+          type: string
+        - in: formData
+          name: password
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+  
+  /logout:
+    post:
+      tags: [user]
+      summary: 用户注销
+      responses:
+        200:
+          description: OK
+
+  /projects:
+    get:
+      tags: [projects]
+      summary: 获取所有工程信息
+      description: 获取所有工程信息
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Project'
+              
+    post:
+      tags: [projects]
+      summary: 新建一个工程
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Project'
+    
+  /projects/{id}:
+    parameters:
+      - name: id
+        description: 工程id
+        in: path
+        type: string
+        required: true
+  
+    get:
+      tags: [projects]
+      summary: 获取一个工程的信息
+      description: 获取指定id的工程信息
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Project'
+    
+    put:
+      tags: [projects]
+      summary: 保存工程
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: formData
+          name: canvas
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Project'
+    
+    delete:
+      tags: [projects]
+      summary: 删除工程
+      responses:
+        200:
+          description: OK
+  
+  /assets:
+    get:
+      tags: [assets]
+      summary: 获取所有素材信息
+      parameters:
+        - in: query
+          name: type
+          type: string
+        - in: query
+          name: category
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Asset'
+            
+    post:
+      tags: [assets]
+      summary: 新建资源
+      parameters:
+        - in: body
+          name: asset
+          schema:
+            $ref: '#/definitions/Asset'
+      responses:
+        200:
+          description: OK
+  
+  /assets/categories:
+    get:
+      tags: [assets]
+      summary: 获取所有资源分类
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+              
+  /assets/types:
+    get:
+      tags: [assets]
+      summary: 获取所有资源种类
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+    
+  /assets/{id}:
+    parameters:
+      - name: id
+        description: 素材资源id
+        in: path
+        type: string
+        required: true
+    
+    get:
+      tags: [assets]
+      summary: 获取指定id资源
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Asset'
+    
+    delete:
+      tags: [assets]
+      summary: 删除资源
+      responses:
+        200:
+          description: OK
+  
+  /image/token:
+    get:
+      tags: [token]
+      summary: 获取图床token信息
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+            
+  /templates:
+    get:
+      tags: [template]
+      summary: 获取所有模版信息
+      parameters:
+        - in: query
+          name: category
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Template'
+              
+    post:
+      tags: [template]
+      summary: 从工程新建/更新一个模版
+      parameters:
+        - in: body
+          name: CreateTemplateRequest
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: string
+              canvas:
+                type: string
+          required: true
+      responses:
+        200:
+          description: OK
+    
+  /templates/{id}:
+    parameters:
+      - name: id
+        description: 模版id
+        in: path
+        type: string
+        required: true
+  
+    get:
+      tags: [template]
+      summary: 获取一个模版的信息
+      description: 获取指定id的模版信息
+      
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Template'
+    
+    delete:
+      tags: [template]
+      summary: 删除模版
+      responses:
+        200:
+          description: OK
+  
+  /admin/assets:
+    get:
+      tags: [admin]
+      summary: 获取所有素材
+      parameters:
+        - in: query
+          name: checked
+          type: boolean
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Asset'
+        
+    put:
+      tags: [admin]
+      summary: 素材审核
+      parameters:
+        - in: body
+          name: assetIds
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: OK
+    
+  /admin/templates:
+    get:
+      tags: [admin]
+      summary: 获取所有模版
+      parameters:
+        - in: query
+          type: boolean
+          name: checked
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Template'
+        
+    put:
+      tags: [admin]
+      summary: 模版审核
+      parameters:
+        - in: body
+          name: templateIds
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: OK
+  
+definitions:
+  Project:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      category:
+        type: string
+        description: 工程类别
+      width:
+        type: integer
+      height:
+        type: integer
+      lastUpdate:
+        type: string
+        description: 最近一次更新时间
+      canvas:
+        description: canvas的状态保存
+        type: string
+      thumb:
+        description: 缩略图地址
+        type: string
+      assets:
+        description: 包含的素材
+        type: array
+        items:
+          $ref: '#/definitions/Asset'    
+  
+  Asset:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+        description: 背景/图片/字体
+      category:
+        description: 分类
+        type: string
+      url:
+        type: string
+        
+  Template:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      category:
+        type: string
+        description: 工程类别
+      width:
+        type: integer
+      height:
+        type: integer
+      lastUpdate:
+        type: string
+        description: 最近一次更新时间
+      canvas:
+        description: canvas的状态保存
+        type: string
+      thumb:
+        description: 缩略图地址
+        type: string
+      assets:
+        description: 包含的素材
+        type: array
+        items:
+          $ref: '#/definitions/Asset'
+  
+  User:
+    type: object
+    properties:
+      ssid:
+        type: string
+      username:
+        type: string
+      roles:
+        type: array
+        items:
+          type: string

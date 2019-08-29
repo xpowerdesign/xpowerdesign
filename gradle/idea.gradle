@@ -1,0 +1,30 @@
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += file('src/querydsl/java')
+        scopes.COMPILE.plus += [configurations.compileOnly]
+    }
+
+    project {
+
+        jdkName = '1.8'
+        languageLevel = '1.8'
+
+        ipr.withXml { xmlFile ->
+            // setup Git root
+            xmlFile.asNode().component.find { it.@name == 'VcsDirectoryMappings' }.replaceNode {
+                component(name: 'VcsDirectoryMappings') {
+                    mapping(directory: "\$PROJECT_DIR\$", vcs: 'Git')
+                }
+            }
+
+            // setup annotationProcessing for lombok
+            xmlFile.asNode().component.find { it.@name == 'CompilerConfiguration' }.annotationProcessing.replaceNode {
+                annotationProcessing() {
+                    profile(default: "true", name: "Default", enabled: 'true')
+                }
+            }
+        }
+    }
+}

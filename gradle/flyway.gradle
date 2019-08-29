@@ -1,0 +1,6 @@
+dependencies {
+    compile "org.flywaydb:flyway-core:5.2.4"
+}
+
+flyway {
+}
