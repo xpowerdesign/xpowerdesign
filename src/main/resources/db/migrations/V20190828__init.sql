@@ -127,6 +127,7 @@ CREATE TABLE `assets`
     `resource_url`   varchar(255) NOT NULL DEFAULT '' COMMENT '图片、资源地址',
     `thumbnail_url`  varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图地址',
     `resources_meta` longtext COMMENT '资源:json {}',
+    `sort`         int(11)      NOT NULL DEFAULT 0 COMMENT '排序',
 
     `personal`       smallint(6)  NOT NULL DEFAULT '0' COMMENT '发布状态：0 私人的 1 官网的',
     `verified`       varchar(255) NOT NULL DEFAULT 'unaudited' COMMENT '发布状态：unaudited 未审核  rejected 驳回 checked 已审核',
