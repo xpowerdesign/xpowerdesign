@@ -122,7 +122,8 @@ CREATE TABLE `assets`
     `user_id`        char(36)     NOT NULL DEFAULT '' COMMENT '用户ID',
     `name`           varchar(255) NOT NULL DEFAULT '' COMMENT '素材名',
     `name_chn`       varchar(255) NOT NULL DEFAULT '' COMMENT '素材名：中文',
-    `type`           varchar(255) NOT NULL DEFAULT 'color' COMMENT '类型：color 颜色 background 背景图， font 字体, sticker，贴纸',
+    `type`           varchar(255) NOT NULL DEFAULT 'background' COMMENT '类型：background 背景图， font 字体, sticker，贴纸',
+    `sub_type`       varchar(255) NOT NULL DEFAULT 'color' COMMENT '子类型: background: image, color, sticket:图片容器、插画、图标、纹理',
 
     `resource_url`   varchar(255) NOT NULL DEFAULT '' COMMENT '图片、资源地址',
     `thumbnail_url`  varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图地址',
