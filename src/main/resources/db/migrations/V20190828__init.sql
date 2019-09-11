@@ -130,7 +130,7 @@ CREATE TABLE `assets`
     `resources_meta` longtext COMMENT '资源:json {}',
     `sort`         int(11)      NOT NULL DEFAULT 0 COMMENT '排序',
 
-    `personal`       smallint(6)  NOT NULL DEFAULT '0' COMMENT '发布状态：0 私人的 1 官网的',
+    `source`       varchar(255) NOT NULL DEFAULT 'personal' COMMENT '发布状态：personal 私人的 official 官网的',
     `verified`       varchar(255) NOT NULL DEFAULT 'unaudited' COMMENT '发布状态：unaudited 未审核  rejected 驳回 checked 已审核',
     `verified_at`    datetime COMMENT '审核通过时间',
     `publish_status` varchar(255) NOT NULL DEFAULT 'unpublished' COMMENT '发布状态：published 已发布 unpublished 未发布',
